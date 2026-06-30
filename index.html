@@ -317,17 +317,21 @@ function downloadCSV(){
 
     var csv = "nis;nisn;nama;jk;tempat_lahir;tanggal_lahir;alamat\n";
 
-    data.forEach(d=>{
-        csv += `${d.nis};${d.nisn};${d.nama};${d.jk};${d.tempat};${d.tanggal};${d.alamat}\n`;
+    data.forEach(function(d){
+
+        csv +=
+        d.nis+";"+
+        d.nisn+";"+
+        d.nama+";"+
+        d.jk+";"+
+        d.tempat+";"+
+        d.tanggal+";"+
+        d.alamat+"\n";
+
     });
 
-    var blob = new Blob([csv],{type:"text/csv"});
-    var a = document.createElement("a");
+    Android.saveCSV(csv);
 
-    a.href = URL.createObjectURL(blob);
-    a.download = "data_siswa.csv";
-
-    setTimeout(()=>a.click(),200);
 }
 
 
