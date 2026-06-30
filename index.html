@@ -321,10 +321,19 @@ function downloadCSV(){
         csv += `${d.nis};${d.nisn};${d.nama};${d.jk};${d.tempat};${d.tanggal};${d.alamat}\n`;
     });
 
-    var blob = new Blob([csv], {type: "text/csv"});
-    var url = URL.createObjectURL(blob);
+    var encoded = encodeURIComponent(csv);
 
-    window.location.href = url;
+    var link = document.createElement("a");
+
+    // ✅ TARUH DI SINI
+    link.target = "_blank";
+
+    link.href = "data:text/csv;charset=utf-8," + encoded;
+    link.download = "data_siswa.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 
