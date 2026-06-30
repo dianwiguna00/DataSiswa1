@@ -311,19 +311,38 @@ function clearForm(){
 
 
 // ================= DOWNLOAD CSV =================
-function downloadCSV(){
+webview1.addJavascriptInterface(new Object() {
+    @android.webkit.JavascriptInterface
+    public void downloadCSV(String csvData) {
 
-    var data = JSON.parse(localStorage.getItem("dataSiswa")) || [];
+        try {
+            String fileName = "data_siswa.csv";
 
-    var csv = "nis;nisn;nama;jk;tempat_lahir;tanggal_lahir;alamat\n";
+            java.io.File path = android.os.Environment.getExternalStoragePublicDirectory(
+                android.os.Environment.DIRECTORY_DOWNLOADS);
 
-    data.forEach(d=>{
-        csv += `${d.nis};${d.nisn};${d.nama};${d.jk};${d.tempat};${d.tanggal};${d.alamat}\n`;
-    });
+            if (!path.exists()) {
+                path.mkdirs();
+            }
 
-    // ✅ Kirim ke Android
-    Android.downloadCSV(csv);
-}
+            java.io.File file = new java.io.File(path, fileName);
+
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
+            fos.write(csvData.getBytes("UTF-8"));
+            fos.flush();
+            fos.close();
+
+            android.widget.Toast.makeText(getApplicationContext(),
+                "✅ File berhasil disimpan di folder Download",
+                android.widget.Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            android.widget.Toast.makeText(getApplicationContext(),
+                "❌ Error: " + e.getMessage(),
+                android.widget.Toast.LENGTH_LONG).show();
+        }
+    }
+}, "Android");
 
 
 // ================= INIT =================
