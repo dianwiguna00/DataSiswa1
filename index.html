@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Aplikasi Data Siswa</title>
+
+<style>
+
+/* === GLOBAL === */
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f4f6f9;
+}
+
+/* HEADER */
+.header{
+    background:#007BFF;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:20px;
+}
+
+/* CONTAINER */
+.container{
+    padding:15px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* INPUT */
+input{
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+/* BUTTON */
+button{
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    margin:3px;
+    cursor:pointer;
+}
+
+.btn-primary{ background:#007BFF; color:white; }
+.btn-success{ background:#28a745; color:white; }
+.btn-warning{ background:#ffc107; }
+.btn-danger{ background:#dc3545; color:white; }
+.btn-dark{ background:#343a40; color:white; }
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:left;
+}
+
+th{
+    background:#007BFF;
+    color:white;
+}
+
+/* SCROLL TABLE */
+.table-container{
+    max-height:300px;
+    overflow-y:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+APLIKASI DATA PESERTA DIDIK
+</div>
+
+<div class="container">
+
+<!-- === PENCARIAN === -->
+<div class="card">
+<h3>🔍 Pencarian</h3>
+<input id="search" placeholder="Cari NISN / Nama..." onkeyup="renderTable()">
+</div>
+
+
+<!-- === FORM === -->
+<div class="card">
+<h3>📋 Form Data</h3>
+
+<input id="nis" placeholder="NIS">
+<input id="nisn" placeholder="NISN">
+<input id="nama" placeholder="Nama">
+<input id="jk" placeholder="Jenis Kelamin">
+<input id="tempat" placeholder="Tempat Lahir">
+<input id="tanggal" placeholder="Tanggal Lahir">
+<input id="alamat" placeholder="Alamat">
+
+<button class="btn-success" onclick="tambah()">Tambah</button>
+<button class="btn-warning" onclick="editData()">Edit/Simpan</button>
+<button class="btn-danger" onclick="hapus()">Hapus Data</button>
+<button class="btn-dark" onclick="clearForm()">Bersihkan</button>
+<button class="btn-primary" onclick="downloadCSV()">Download File</button>
+
+</div>
+
+
+<!-- === TABEL === -->
+<div class="card">
+<h3>📊 Data Siswa</h3>
+
+<div class="table-container">
+<table id="tabel">
+<thead>
+<tr>
+<th>NIS</th>
+<th>NISN</th>
+<th>Nama</th>
+<th>JK</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+var dataSiswa = [];
+
+// ================= STORAGE =================
+function save(){
+    localStorage.setItem("dataSiswa", JSON.stringify(dataSiswa));
+}
+
+function load(){
+
+    var data = localStorage.getItem("dataSiswa");
+
+    if(data){
+        dataSiswa = JSON.parse(data);
+    }else{
+        loadCSV();
+    }
+
+    renderTable();
+}
+
+// ================= LOAD CSV =================
+function loadCSV(){
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET","siswa.csv",true);
+
+    xhr.onload = function(){
+
+        var lines = xhr.responseText.trim().split("\n");
+
+        for(var i=1;i<lines.length;i++){
+
+            var r = lines[i].split(";");
+
+            dataSiswa.push({
+                nis:r[0],
+                nisn:r[1],
+                nama:r[2],
+                jk:r[3],
+                tempat:r[4],
+                tanggal:r[5],
+                alamat:r[6]
+            });
+        }
+
+        save();
+        renderTable();
+    }
+
+    xhr.send();
+}
+
+// ================= TAMPILKAN DATA =================
+function renderTable(){
+
+    var key = search.value.toLowerCase();
+
+    var tbody = document.querySelector("#tabel tbody");
+    tbody.innerHTML = "";
+
+    dataSiswa.forEach((d,i)=>{
+
+        if(
+            d.nama.toLowerCase().includes(key) ||
+            d.nisn.includes(key)
+        ){
+
+            tbody.innerHTML += `
+            <tr>
+                <td>${d.nis}</td>
+                <td>${d.nisn}</td>
+                <td>${d.nama}</td>
+                <td>${d.jk}</td>
+                <td>
+                    <button onclick="pilih(${i})">Pilih</button>
+                </td>
+            </tr>`;
+        }
+    });
+
+}
+
+
+// ================= PILIH DATA =================
+function pilih(i){
+
+    var d = dataSiswa[i];
+
+    nis.value = d.nis;
+    nisn.value = d.nisn;
+    nama.value = d.nama;
+    jk.value = d.jk;
+    tempat.value = d.tempat;
+    tanggal.value = d.tanggal;
+    alamat.value = d.alamat;
+}
+
+
+// ================= TAMBAH =================
+function tambah(){
+
+    dataSiswa.push({
+        nis:nis.value,
+        nisn:nisn.value,
+        nama:nama.value,
+        jk:jk.value,
+        tempat:tempat.value,
+        tanggal:tanggal.value,
+        alamat:alamat.value
+    });
+
+    save();
+    renderTable();
+    clearForm();
+}
+
+
+// ================= EDIT =================
+function editData(){
+
+    var idx = dataSiswa.findIndex(d => d.nisn === nisn.value);
+
+    if(idx === -1){
+        alert("Data tidak ditemukan");
+        return;
+    }
+
+    dataSiswa[idx] = {
+        nis:nis.value,
+        nisn:nisn.value,
+        nama:nama.value,
+        jk:jk.value,
+        tempat:tempat.value,
+        tanggal:tanggal.value,
+        alamat:alamat.value
+    };
+
+    save();
+    renderTable();
+    clearForm();
+}
+
+
+// ================= HAPUS =================
+function hapus(){
+
+    dataSiswa = dataSiswa.filter(d => d.nisn !== nisn.value);
+
+    save();
+    renderTable();
+    clearForm();
+}
+
+
+// ================= CLEAR =================
+function clearForm(){
+
+    document.querySelectorAll("input").forEach(i=>i.value="");
+}
+
+
+// ================= DOWNLOAD CSV =================
+function downloadCSV(){
+
+    var data = JSON.parse(localStorage.getItem("dataSiswa")) || [];
+
+    var csv = "nis;nisn;nama;jk;tempat_lahir;tanggal_lahir;alamat\n";
+
+    data.forEach(d=>{
+        csv += `${d.nis};${d.nisn};${d.nama};${d.jk};${d.tempat};${d.tanggal};${d.alamat}\n`;
+    });
+
+    var blob = new Blob([csv],{type:"text/csv"});
+    var a = document.createElement("a");
+
+    a.href = URL.createObjectURL(blob);
+    a.download = "data_siswa.csv";
+
+    setTimeout(()=>a.click(),200);
+}
+
+
+// ================= INIT =================
+window.onload = load;
+
+</script>
+
+</body>
+</html>
