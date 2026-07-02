@@ -1,163 +1,358 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Aplikasi Data Siswa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aplikasi Data Peserta Didik</title>
 
 <style>
 
-/* === GLOBAL === */
-body{
+/* =========================
+   GLOBAL
+========================= */
+*{
     margin:0;
-    font-family:Arial;
-    background:#f4f6f9;
-}
-
-/* HEADER */
-.header{
-    background:#007BFF;
-    color:white;
-    padding:15px;
-    text-align:center;
+    padding:0;
+    box-sizing:border-box;
     font-size:20px;
 }
 
-/* CONTAINER */
-.container{
-    padding:15px;
+body{
+    font-family:'Segoe UI', Tahoma, sans-serif;
+    background:#eef2f7;
+    color:#333;
 }
 
-/* CARD */
+/* =========================
+   HEADER
+========================= */
+.header{
+    background:linear-gradient(135deg,#0d6efd,#0a58ca);
+    color:white;
+    text-align:center;
+    padding:20px;
+    font-size:20px;
+    font-weight:600;
+    letter-spacing:1px;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+/* =========================
+   CARD
+========================= */
 .card{
     background:white;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    border:1px solid #e7eaf0;
 }
 
-/* INPUT */
+.card h3{
+    margin-bottom:15px;
+    color:#0d6efd;
+}
+
+/* =========================
+   STATISTIK
+========================= */
+.stats{
+    text-align:center;
+}
+
+.stat-box h2{
+    font-size:30px;
+    color:#0d6efd;
+}
+
+.stat-box p{
+    color:#666;
+}
+
+/* =========================
+   INPUT
+========================= */
 input{
     width:100%;
-    padding:10px;
-    margin:5px 0;
-    border:1px solid #ccc;
-    border-radius:5px;
+    padding:12px;
+    border:1px solid #d0d7de;
+    border-radius:8px;
+    font-size:20px;
+    transition:0.3s;
 }
 
-/* BUTTON */
+input:focus{
+    outline:none;
+    border-color:#0d6efd;
+    box-shadow:0 0 0 3px rgba(13,110,253,.2);
+}
+
+/* =========================
+   FORM GRID
+========================= */
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.button-group{
+    margin-top:15px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
 button{
-    padding:10px;
     border:none;
-    border-radius:5px;
-    margin:3px;
+    padding:12px 16px;
+    border-radius:8px;
     cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
 }
 
-.btn-primary{ background:#007BFF; color:white; }
-.btn-success{ background:#28a745; color:white; }
-.btn-warning{ background:#ffc107; }
-.btn-danger{ background:#dc3545; color:white; }
-.btn-dark{ background:#343a40; color:white; }
+button:hover{
+    transform:translateY(-2px);
+}
 
-/* TABLE */
+.btn-primary{
+    background:#0d6efd;
+    color:white;
+}
+
+.btn-success{
+    background:#198754;
+    color:white;
+}
+
+.btn-warning{
+    background:#ffc107;
+    color:black;
+}
+
+.btn-danger{
+    background:#dc3545;
+    color:white;
+}
+
+.btn-dark{
+    background:#212529;
+    color:white;
+}
+
+/* =========================
+   TABLE
+========================= */
+.table-container{
+    max-height:400px;
+    overflow:auto;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
 }
 
-th, td{
-    border:1px solid #ddd;
-    padding:8px;
-    text-align:left;
-}
-
 th{
-    background:#007BFF;
+    background:#0d6efd;
     color:white;
+    padding:12px;
+    position:sticky;
+    top:0;
 }
 
-/* SCROLL TABLE */
-.table-container{
-    max-height:300px;
-    overflow-y:auto;
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+tr:nth-child(even){
+    background:#f8f9fa;
+}
+
+tr:hover{
+    background:#e9f2ff;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer{
+    text-align:center;
+    color:#666;
+    padding:20px;
+    font-size:13px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:768px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .button-group{
+        flex-direction:column;
+    }
+
+    button{
+        width:100%;
+    }
+
+    .header{
+        font-size:20px;
+    }
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
-APLIKASI DATA PESERTA DIDIK
+    🎓 APLIKASI DATA PESERTA DIDIK
 </div>
 
 <div class="container">
 
-<!-- === PENCARIAN === -->
-<div class="card">
-<h3>🔍 Pencarian</h3>
-<input id="search" placeholder="Cari NISN / Nama..." onkeyup="renderTable()">
+    <!-- STATISTIK -->
+    <div class="card stats">
+        <div class="stat-box">
+            <h2 id="totalSiswa">0</h2>
+            <p>Total Peserta Didik</p>
+        </div>
+    </div>
+
+    <!-- PENCARIAN -->
+    <div class="card">
+        <h3>🔍 Pencarian Data</h3>
+        <input id="search"
+               placeholder="Cari NISN atau Nama..."
+               onkeyup="renderTable()">
+    </div>
+
+    <!-- FORM -->
+    <div class="card">
+        <h3>📋 Form Data Peserta Didik</h3>
+
+        <div class="form-grid">
+
+            <input id="nis" placeholder="NIS">
+
+            <input id="nisn" placeholder="NISN">
+
+            <input id="nama" placeholder="Nama Lengkap">
+
+            <input id="jk" placeholder="Jenis Kelamin">
+
+            <input id="tempat" placeholder="Tempat Lahir">
+
+            <input id="tanggal" type="date">
+
+            <input id="alamat"
+                   placeholder="Alamat"
+                   style="grid-column:1 / -1">
+
+        </div>
+
+        <div class="button-group">
+
+            <button class="btn-success"
+                    onclick="tambah()">
+                ➕ Tambah
+            </button>
+
+            <button class="btn-warning"
+                    onclick="editData()">
+                ✏️ Edit / Simpan
+            </button>
+
+            <button class="btn-danger"
+                    onclick="hapus()">
+                🗑 Hapus
+            </button>
+
+            <button class="btn-dark"
+                    onclick="clearForm()">
+                🔄 Bersihkan
+            </button>
+
+            <button class="btn-primary"
+                    onclick="downloadCSV()">
+                📥 Download CSV
+            </button>
+
+        </div>
+    </div>
+
+    <!-- TABEL -->
+    <div class="card">
+
+        <h3>📊 Data Peserta Didik</h3>
+
+        <div class="table-container">
+
+            <table id="tabel">
+
+                <thead>
+                    <tr>
+                        <th>NIS</th>
+                        <th>NISN</th>
+                        <th>Nama</th>
+                        <th>JK</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
 
-
-<!-- === FORM === -->
-<div class="card">
-<h3>📋 Form Data</h3>
-
-<input id="nis" placeholder="NIS">
-<input id="nisn" placeholder="NISN">
-<input id="nama" placeholder="Nama">
-<input id="jk" placeholder="Jenis Kelamin">
-<input id="tempat" placeholder="Tempat Lahir">
-<input id="tanggal" placeholder="Tanggal Lahir">
-<input id="alamat" placeholder="Alamat">
-
-<button class="btn-success" onclick="tambah()">Tambah</button>
-<button class="btn-warning" onclick="editData()">Edit/Simpan</button>
-<button class="btn-danger" onclick="hapus()">Hapus Data</button>
-<button class="btn-dark" onclick="clearForm()">Bersihkan</button>
-<button class="btn-primary" onclick="downloadCSV()">Download File</button>
-
-</div>
-
-
-<!-- === TABEL === -->
-<div class="card">
-<h3>📊 Data Siswa</h3>
-
-<div class="table-container">
-<table id="tabel">
-<thead>
-<tr>
-<th>NIS</th>
-<th>NISN</th>
-<th>Nama</th>
-<th>JK</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</div>
-
-</div>
-
+<div class="footer">
+    © 2026 Sistem Data Peserta Didik
 </div>
 
 <script>
 
 var dataSiswa = [];
 
-// ================= STORAGE =================
+/* =========================
+   STORAGE
+========================= */
+
 function save(){
-    localStorage.setItem("dataSiswa", JSON.stringify(dataSiswa));
+    localStorage.setItem(
+        "dataSiswa",
+        JSON.stringify(dataSiswa)
+    );
 }
 
 function load(){
 
-    var data = localStorage.getItem("dataSiswa");
+    var data =
+    localStorage.getItem("dataSiswa");
 
     if(data){
         dataSiswa = JSON.parse(data);
@@ -168,7 +363,10 @@ function load(){
     renderTable();
 }
 
-// ================= LOAD CSV =================
+/* =========================
+   LOAD CSV
+========================= */
+
 function loadCSV(){
 
     var xhr = new XMLHttpRequest();
@@ -177,7 +375,10 @@ function loadCSV(){
 
     xhr.onload = function(){
 
-        var lines = xhr.responseText.trim().split("\n");
+        if(xhr.status !== 200) return;
+
+        var lines =
+        xhr.responseText.trim().split("\n");
 
         for(var i=1;i<lines.length;i++){
 
@@ -192,27 +393,36 @@ function loadCSV(){
                 tanggal:r[5],
                 alamat:r[6]
             });
+
         }
 
         save();
         renderTable();
+
     }
 
     xhr.send();
 }
 
-// ================= TAMPILKAN DATA =================
+/* =========================
+   TABEL
+========================= */
+
 function renderTable(){
 
-    var key = search.value.toLowerCase();
+    var key =
+    search.value.toLowerCase();
 
-    var tbody = document.querySelector("#tabel tbody");
+    var tbody =
+    document.querySelector("#tabel tbody");
+
     tbody.innerHTML = "";
 
     dataSiswa.forEach((d,i)=>{
 
         if(
-            d.nama.toLowerCase().includes(key) ||
+            d.nama.toLowerCase().includes(key)
+            ||
             d.nisn.includes(key)
         ){
 
@@ -223,16 +433,25 @@ function renderTable(){
                 <td>${d.nama}</td>
                 <td>${d.jk}</td>
                 <td>
-                    <button onclick="pilih(${i})">Pilih</button>
+                    <button class="btn-primary"
+                    onclick="pilih(${i})">
+                    Pilih
+                    </button>
                 </td>
             </tr>`;
         }
+
     });
 
+    document.getElementById(
+        "totalSiswa"
+    ).innerText = dataSiswa.length;
 }
 
+/* =========================
+   PILIH
+========================= */
 
-// ================= PILIH DATA =================
 function pilih(i){
 
     var d = dataSiswa[i];
@@ -246,8 +465,10 @@ function pilih(i){
     alamat.value = d.alamat;
 }
 
+/* =========================
+   TAMBAH
+========================= */
 
-// ================= TAMBAH =================
 function tambah(){
 
     dataSiswa.push({
@@ -265,18 +486,24 @@ function tambah(){
     clearForm();
 }
 
+/* =========================
+   EDIT
+========================= */
 
-// ================= EDIT =================
 function editData(){
 
-    var idx = dataSiswa.findIndex(d => d.nisn === nisn.value);
+    var idx =
+    dataSiswa.findIndex(
+    d=>d.nisn===nisn.value);
 
-    if(idx === -1){
+    if(idx===-1){
+
         alert("Data tidak ditemukan");
         return;
     }
 
-    dataSiswa[idx] = {
+    dataSiswa[idx]={
+
         nis:nis.value,
         nisn:nisn.value,
         nama:nama.value,
@@ -284,6 +511,7 @@ function editData(){
         tempat:tempat.value,
         tanggal:tanggal.value,
         alamat:alamat.value
+
     };
 
     save();
@@ -291,42 +519,64 @@ function editData(){
     clearForm();
 }
 
+/* =========================
+   HAPUS
+========================= */
 
-// ================= HAPUS =================
 function hapus(){
 
-    dataSiswa = dataSiswa.filter(d => d.nisn !== nisn.value);
+    if(!confirm("Hapus data ini?")){
+        return;
+    }
+
+    dataSiswa =
+    dataSiswa.filter(
+    d=>d.nisn!==nisn.value);
 
     save();
     renderTable();
     clearForm();
 }
 
+/* =========================
+   BERSIHKAN
+========================= */
 
-// ================= CLEAR =================
 function clearForm(){
 
-    document.querySelectorAll("input").forEach(i=>i.value="");
+    document
+    .querySelectorAll("input")
+    .forEach(i=>i.value="");
 }
 
+/* =========================
+   DOWNLOAD CSV
+========================= */
 
-// ================= DOWNLOAD CSV =================
 function downloadCSV(){
 
-    var data = JSON.parse(localStorage.getItem("dataSiswa")) || [];
+    var data =
+    JSON.parse(
+        localStorage.getItem("dataSiswa")
+    ) || [];
 
-    var csv = "nis;nisn;nama;jk;tempat_lahir;tanggal_lahir;alamat\n";
+    var csv =
+    "nis;nisn;nama;jk;tempat_lahir;tanggal_lahir;alamat\n";
 
     data.forEach(d=>{
-        csv += `${d.nis};${d.nisn};${d.nama};${d.jk};${d.tempat};${d.tanggal};${d.alamat}\n`;
+
+        csv +=
+        `${d.nis};${d.nisn};${d.nama};${d.jk};${d.tempat};${d.tanggal};${d.alamat}\n`;
+
     });
 
-    // ✅ kirim ke Android
     Android.downloadCSV(csv);
 }
 
+/* =========================
+   INIT
+========================= */
 
-// ================= INIT =================
 window.onload = load;
 
 </script>
